@@ -3,7 +3,6 @@
   Dynamic Rough Soft Sets (DRSS) — Complete Analysis Code
   Manuscript: "Dynamic Rough Soft Sets: Modeling Time-Varying Parameter
                Systems with Cross-Temporal Reasoning"
-  Author : Muhammad Saeed, University of Management and Technology, Lahore
 =============================================================================
 
 This file reproduces ALL analyses reported in the manuscript:
