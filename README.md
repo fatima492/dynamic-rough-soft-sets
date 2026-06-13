@@ -98,9 +98,3 @@ will be added here once publication details are finalized.
 ## License
 
 Released under the MIT License — see [LICENSE](LICENSE).
-
-## Contact
-
-**Authors:** Muhammad Saeed, Fatima Razaq
-*Department of Mathematics, University of Management & Technology, Lahore 54770, Pakistan*
-Email: `muhammad.saeed@umt.edu.pk`; `S2023265007@umt.edu.pk`
