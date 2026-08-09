@@ -141,7 +141,7 @@ PhysioNet credentialed access: <https://physionet.org/content/mimiciv/>
 The clinical experiment runs on a **synthetic clinical proxy** that mirrors the
 cohort structure (sensor missingness, regime patterns, prevalence) so the
 pipeline is runnable without credentialed data. Numbers produced by the proxy
-are not MIMIC-IV results and must not be reported as such — on the proxy every
+are not MIMIC-IV results and must not be reported as such on the proxy every
 method, including every baseline, attains perfect discrimination, which is a
 signature of label leakage rather than of a working predictor. To evaluate on
 real data, point the cohort loader at a PhysioNet-credentialed extract.
@@ -153,4 +153,4 @@ will be added once publication details are finalized.
 
 ## License
 
-Released under the MIT License — see [LICENSE](LICENSE).
+Released under the MIT License see [LICENSE](LICENSE).
