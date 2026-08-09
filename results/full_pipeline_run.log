@@ -1,0 +1,198 @@
+
+======================================================================
+  DRSS COMPLETE ANALYSIS — Reproducing all manuscript results
+======================================================================
+
+[1/9] Core framework & examples …
+============================================================
+SECTION 9.1 — ABSTRACT EXAMPLE
+============================================================
+U = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6']
+T = ['t1', 't2', 't3']
+X = {'u4', 'u5', 'u3'}
+
+ t        lower                upper     boundary           definability  |lower|  |upper|  |boundary|  entropy
+t1         {u3}     {u1, u2, u3, u5} {u1, u2, u5}      roughly_definable        1        4           3 1.459148
+t2 {u4, u5, u3} {u1, u2, u4, u5, u3}     {u1, u2}      roughly_definable        3        5           2 1.490602
+t3         {u3}     {u1, u2, u3, u5} {u1, u2, u5} externally_indefinable        1        4           3 1.396241
+
+Cross-temporal aggregates over I = T = ['t1', 't2', 't3']:
+  Persistent positive region  apr^I_P(X)  = {'u3'}
+  Cumulative upper            bar_apr^I_P = {'u1', 'u2', 'u4', 'u5', 'u3'}
+  Persistence boundary        Bnd^I(X)    = {'u4', 'u1', 'u2', 'u5'}
+  H_t1(S_t1) = 1.4591
+  H_t2(S_t2) = 1.4906
+  H_t3(S_t3) = 1.3962
+  ΔH(t1,t2) = 0.0315
+
+Liang–Shi entropy (static aggregate) = 0.3312
+  Liang–Shi at t1 = 0.2432
+  Liang–Shi at t2 = 0.3312
+  Liang–Shi at t3 = 0.1551
+
+Boundary non-monotonicity (Theorem 5.7(7) counterexample):
+  I = {t2} → Bnd^I(X) = {'u1', 'u2'}
+  J = {t1,t2,t3} → Bnd^J(X) = {'u4', 'u1', 'u2', 'u5'}
+  ✓ Enlarging I enlarges the boundary (non-monotone confirmed)
+
+✓ Complement involution (S^c)^c = S verified
+
+============================================================
+SECTION 9.2 — ICU MONITORING EXAMPLE
+============================================================
+ t   lower   upper boundary           definability
+t1      {} {N, AR}  {N, AR}    totally_indefinable
+t2 {C, AR} {C, AR}       {}      roughly_definable
+t3 {C, AR} {C, AR}       {} externally_indefinable
+t4 {C, AR} {C, AR}       {} externally_indefinable
+
+Persistent positive region on I' = ['t2', 't3', 't4']:
+  apr^{I'}_P(X)  = {'C', 'AR'}
+  Bnd^{I'}(X)    = set()
+  Saved: fig4_temporal_evolution.png
+
+[2/9] Algorithm wall-clock comparison …
+  Base algorithm:        0.82 ms/run
+  Incremental algorithm: 1.02 ms/run
+  Speedup:               0.8×
+  ✓ Algorithm 1 and Algorithm 2 produce identical approximations
+
+[3/9] Synthetic benchmark (n_runs=30, ρ=0.75) …
+
+──────────────────────────────────────────────────────────────────────
+  Table 4: Synthetic benchmark (ρ=0.75)
+──────────────────────────────────────────────────────────────────────
+Method             Error (%)          AUROC          Bnd        p vs DRSS
+──────────────────────────────────────────────────────────────────────
+B1                 30.0 ± 0.0       0.500 ± 0.000  199.0      1.69e-06
+B2                 30.0 ± 0.0       0.500 ± 0.000  30.8       1.69e-06
+B3                 29.9 ± 0.2       0.501 ± 0.003  —          1.71e-06
+B4                 6.9 ± 3.6       0.984 ± 0.014  —          1.73e-06
+DRSS               85.5 ± 2.4       0.004 ± 0.003  30.8       —
+──────────────────────────────────────────────────────────────────────
+  Saved: fig6_synthetic_results.png
+
+[4/9] Calibration sensitivity sweep …
+
+  Table 3: Calibration sweep — mean classification error (%)
+         β=1.0/|U|  β=2.0/|U|  β=4.0/|U|
+0.5/|U|       85.9       85.9       85.9
+1.0/|U|       70.0       85.9       85.9
+2.0/|U|       24.7       70.0       85.9
+
+[5/9] Sensitivity to ρ …
+
+  Table 5: Sensitivity to ρ — mean error (%)
+rho     0.60  0.75  0.90
+method                  
+B1      30.0  30.0  30.0
+B4      21.3   5.8   0.6
+DRSS    78.4  85.5  84.6
+  Saved: fig7_sensitivity.png
+
+  Cross-temporal ablation …
+  DRSS error:    85.6%
+  Ablated error: 30.0%
+
+[6/9] MIMIC-IV proxy experiment …
+
+──────────────────────────────────────────────────────────────────────────────
+  MIMIC-IV PROXY EXPERIMENT — Table 6
+──────────────────────────────────────────────────────────────────────────────
+Method               AUROC            F1 (pos)         Bnd        Wall(s)    p vs DRSS
+──────────────────────────────────────────────────────────────────────────────
+B1                   0.500 ± 0.000    0.000 ± 0.000    60.0       —          6.25e-02
+B2                   0.500 ± 0.000    0.000 ± 0.000    55.5       —          6.25e-02
+B3                   1.000 ± 0.000    1.000 ± 0.000    —          —          1.00e+00
+B4                   1.000 ± 0.000    1.000 ± 0.000    —          —          1.00e+00
+DRSS                 1.000 ± 0.000    0.000 ± 0.000    55.5       0.060      —
+──────────────────────────────────────────────────────────────────────────────
+
+  95% bootstrap CIs (1000 resamples) …
+  B1 AUROC CI: [0.500, 0.500]
+  B4 AUROC CI: [1.000, 1.000]
+  DRSS AUROC CI: [1.000, 1.000]
+
+  Granularity sensitivity …
+granularity  auroc_mean  auroc_std  f1_mean  bnd_mean
+     coarse         1.0        0.0      0.0 41.092593
+   standard         1.0        0.0      0.0 39.310185
+       fine         1.0        0.0      1.0 37.055556
+
+  Sliding-window experiment …
+
+  Table 7:
+ w  auroc_mean  auroc_std  bnd_mean
+ 6    0.809524   0.084179 43.388889
+12    0.916667   0.117851 42.805556
+24    1.000000   0.000000 42.541667
+48    1.000000   0.000000 41.673611
+72    1.000000   0.000000 39.671296
+  Saved: fig_sliding_window.png
+  Saved: fig9_calibration.png
+  Saved: fig10_boundary_evolution.png
+
+[7/9] Failure mode analysis …
+
+  FM1: i.i.d. A_t — no regime structure
+    DRSS error: 54.3%, B1 error: 30.0%
+
+  FM2: sparse |A_t| ≤ 2
+    DRSS error: 58.0%
+
+  FM3: coarse granules → boundary explosion
+    Mean |Bnd| = 60.0 (100% of |U|)
+
+  Diagnostic regression (Table 8) …
+
+  Combined model R² (main effects)   = 0.282
+  Combined model R² (+ interaction)  = 0.285
+             diagnostic  pearson_r  p_value
+             Var_t(H_t)      0.123 0.223448
+             Mean |A_t|     -0.313 0.001547
+Mean max_a |F_t(a)|/|U|     -0.428 0.000009
+ Var_t(H_t) × Mean|A_t|      0.127 0.208658
+
+[8/9] DTRS + DRSS integration …
+
+============================================================
+SECTION 9.2 — ICU MONITORING EXAMPLE
+============================================================
+ t   lower   upper boundary           definability
+t1      {} {N, AR}  {N, AR}    totally_indefinable
+t2 {C, AR} {C, AR}       {}      roughly_definable
+t3 {C, AR} {C, AR}       {} externally_indefinable
+t4 {C, AR} {C, AR}       {} externally_indefinable
+
+Persistent positive region on I' = ['t2', 't3', 't4']:
+  apr^{I'}_P(X)  = {'C', 'AR'}
+  Bnd^{I'}(X)    = set()
+
+============================================================
+SECTION 13 — DTRS + DRSS INTEGRATION
+α_DTRS=0.8, β_DTRS=0.3
+============================================================
+t      Pr(X|N)    Pr(X|AR)   Pr(X|C)    POS            NEG        BND
+t1     0.00       0.00       0.00       set()          {'N', 'AR', 'C'} set()
+t2     0.00       1.00       1.00       {'C', 'AR'}    {'N'}      set()
+t3     0.00       1.00       1.00       {'C', 'AR'}    {'N'}      set()
+t4     0.00       1.00       1.00       {'C', 'AR'}    {'N'}      set()
+
+Persistent three-way regions on I' = ['t2', 't3', 't4']:
+  POS^{α,β}_I' = {'C', 'AR'}
+  NEG^{α,β}_I' = {'N'}
+  BND^{α,β}_I' = set()
+
+[9/9] Generalisation theorem verification …
+  ✓ Theorem 7.1: Pawlak RS as DRSS verified
+  ✓ Theorem 7.3: DSS as DRSS verified (lower(g)=g for granule targets)
+    t=t2: non-partition cover detected — overlap L ∩ U(X^c) = {'u5'}
+           (expected per Remark 6.2 for non-partition soft covers)
+  ✓ Theorem 6.7 (Duality): verified; overlap cases confirm Remark 6.2 (non-partition covers produce L ∩ U_(X^c) ≠ ∅ as documented)
+
+======================================================================
+  ALL ANALYSES COMPLETE
+  Output figures: fig4_temporal_evolution.png, fig6_synthetic_results.png,
+                  fig7_sensitivity.png, fig9_calibration.png,
+                  fig10_boundary_evolution.png, fig_sliding_window.png
+======================================================================

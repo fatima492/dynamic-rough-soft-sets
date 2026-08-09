@@ -1,0 +1,116 @@
+
+==========================================================================
+  TABLE 11 — main comparison (30 runs, p_bleed=0.25 via rho=0.75)
+==========================================================================
+method  error_pct  error_sd  auroc  auroc_sd
+    B1     31.800     1.400  0.500     0.000
+    B2     28.650     3.742  0.548     0.062
+    B3     18.783     5.346  0.704     0.084
+    B4     28.222     5.251  0.716     0.083
+  DRSS     45.517     8.934  0.682     0.118
+  Wilcoxon B1 vs DRSS (error): p = 5.74e-06
+  Wilcoxon B2 vs DRSS (error): p = 2.35e-06
+  Wilcoxon B3 vs DRSS (error): p = 1.73e-06
+  Wilcoxon B4 vs DRSS (error): p = 2.61e-08
+
+==========================================================================
+  TABLE 12 — sensitivity to granule fidelity (20 runs per cell)
+==========================================================================
+ p_bleed  B1_err  B1_auroc  B3_err  B3_auroc  B4_err  B4_auroc  DRSS_err  DRSS_auroc
+   0.050  26.100     0.586  19.025     0.699  21.667     0.811    59.675       0.696
+   0.150  31.100     0.509  19.025     0.699  23.667     0.777    47.500       0.701
+   0.250  31.675     0.500  18.450     0.709  27.667     0.730    44.825       0.690
+   0.500  31.675     0.500  18.000     0.715  30.333     0.691    40.550       0.706
+   0.800  31.675     0.500  18.300     0.711  31.833     0.687    40.825       0.711
+
+==========================================================================
+  CROSS-TEMPORAL ABLATION (30 runs)
+==========================================================================
+  columns available: B1_auroc, B1_bnd, B1_error, B2_auroc, B2_bnd, B2_error, B3_auroc, B3_error, B4_auroc, B4_error, DRSS_auroc, DRSS_bnd, DRSS_error
+
+==========================================================================
+  TABLE 10 — 6x6 calibration sweep
+==========================================================================
+
+==========================================================================
+  10.7  6x6 CALIBRATION SWEEP  ->  Table 10
+==========================================================================
+
+  Classification error (%):
+beta_mult   0.25  0.50  1.00  2.00  4.00  8.00
+alpha_mult                                    
+0.25        68.3  46.5  47.4  47.5  49.0  54.1
+0.50        44.8  68.3  47.3  47.4  48.2  52.8
+1.00        44.9  44.8  68.3  47.4  47.5  50.1
+2.00        45.3  45.2  44.8  68.3  47.4  47.6
+4.00        45.3  45.3  45.3  44.9  68.3  47.4
+8.00        45.3  45.3  45.3  45.3  44.9  68.3
+
+  AUROC:
+beta_mult   0.25  0.50  1.00  2.00  4.00  8.00
+alpha_mult                                    
+0.25       0.731 0.625 0.604 0.598 0.562 0.492
+0.50       0.694 0.731 0.611 0.601 0.582 0.511
+1.00       0.689 0.692 0.731 0.606 0.598 0.548
+2.00       0.681 0.686 0.690 0.731 0.604 0.591
+4.00       0.674 0.676 0.680 0.688 0.731 0.604
+8.00       0.670 0.671 0.673 0.677 0.688 0.731
+
+  Spread over the whole grid:  error 23.5 p.p.,  AUROC 0.239
+
+==========================================================================
+  TABLE 18 — diagnostic regression
+==========================================================================
+
+==========================================================================
+  10.9  DIAGNOSTIC REGRESSION  ->  Table 18
+==========================================================================
+  response Delta = err_B1 - err_DRSS  (percentage points)
+    mean -13.15  sd 7.99  range [-34.50, 6.50]
+    DRSS LOSES on 95.3% of runs  (previously not visible)
+  n = 300
+    Var_t(H_t)                 r=+0.09  beta=+0.745 [-0.174,+1.664]  VIF=1.06
+    mean|A_t|                  r=-0.13  beta=-1.167 [-2.104,-0.231]  VIF=1.09
+    mean max_a|F_t(a)|/|U|     r=+0.05  beta=+0.896 [-0.052,+1.844]  VIF=1.12
+  CV R^2 main effects      : -0.019 +/- 0.031
+  CV R^2 with interaction  : -0.034 +/- 0.038
+  in-sample adjusted R^2   : 0.023
+  nested F(1,295) = 2.21, p = 1.38e-01
+
+  SCOPE: fitted and cross-validated on SYNTHETIC data only. The
+  diagnostics are not validated on real cohorts and the fitted
+  coefficients must not be transferred to a new domain. Read them
+  as ordinal warnings, not as a calibrated model.
+
+==========================================================================
+  TABLE 16 — timing protocol
+==========================================================================
+
+==========================================================================
+  10.8  TIMING PROTOCOL  ->  Table 16
+==========================================================================
+  timed runs                 : 200 (3 warm-up discarded per cohort)
+  base  mean / median (s)    : 0.0058 / 0.0062  IQR [0.0050, 0.0067]
+  incr  mean / median (s)    : 0.0109 / 0.0114  IQR [0.0101, 0.0121]
+  speedup mean [95% CI]      : 0.53x [0.45, 0.64]
+  mean |Delta_t|             : 7.69
+  cost term 1 (element touches, dominates) : 14429
+  cost term 2 (fingerprint comparisons)    : 238
+  peak RSS (MB) / aux state (kB)           : 181.7 / 3.1
+
+  A speedup factor is a property of a WORKLOAD, not of an algorithm;
+  report it as 'reduces per-cohort update cost by ~0.5x on this
+  workload', not as 'delivers a 9x speedup'.
+
+==========================================================================
+  DEGENERACY CHECK
+==========================================================================
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  10.10b  REPRODUCIBILITY DIAGNOSTIC — synthetic benchmark
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  granules satisfying F_t(a) subset-of X*  : 62
+  mean / max frac_lower                    : 0.0485 / 0.6600
+  AUROC of frac_boundary alone             : 0.492
+
+  Lower approximation is non-degenerate; benchmark exercises DRSS.

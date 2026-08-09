@@ -1,0 +1,134 @@
+
+##########################################################################
+#  DRSS EXTENDED ANALYSIS SUITE
+#  quick=True
+##########################################################################
+
+==========================================================================
+  10.1  THEORY VERIFICATION
+==========================================================================
+   prop_ordering_i                         : PASS
+   prop_ordering_ii_fails_without_fullness : PASS
+   prop_ordering_iii_fails                 : PASS
+   duality_fails_full_nonpartition         : PASS
+   prop_onesided_holds_here                : PASS
+   is_full_but_not_partition               : PASS
+   onesided_fails_without_fullness         : PASS
+   duality_holds_on_partition              : PASS
+   independence_partition_vs_intcomplete   : PASS
+   cor_crossint                            : PASS
+   thm_mgrs_embedding                      : PASS
+   four_region_icu_t1                      : PASS
+   icu_t1_reclassified                     : PASS
+
+   All corrected statements verified; all superseded statements shown false.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  BENCHMARK VALIDITY DIAGNOSTIC
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  granules satisfying F_t(a) subset-of X*  : 62
+  mean / max frac_lower                    : 0.0485 / 0.6600
+  AUROC of frac_boundary alone             : 0.492
+
+  Lower approximation is non-degenerate; benchmark exercises DRSS.
+
+==========================================================================
+  10.3  OVERLAP-DENSITY STUDY  ->  Table 7
+==========================================================================
+ lambda  viol_H_disjoint  viol_Ht_disjoint  viol_H_overlap  viol_Ht_overlap  mean_omega  pct_intersection_complete  n
+  1.000            0.000             0.000           0.000            0.000       0.000                    100.000 40
+  1.250            0.000             0.000           0.025            0.000       0.321                      2.500 40
+  1.500            0.000             0.000           0.000            0.000       0.587                      0.000 40
+  2.000            0.000             0.000           0.000            0.000       0.977                      2.500 40
+  3.000            0.000             0.000           0.000            0.000       1.437                      0.000 40
+  4.000            0.000             0.000           0.000            0.000       1.740                     10.000 40
+
+  Regime-switch effect size (per-slice, fair comparison):
+    DRSS dynamic soft entropy : 1.878
+    Liang-Shi (per slice)     : 1.878
+
+  Usage rule for Section 8.3: if lambda > 1.5, use H_t descriptively
+  (drift detection, window selection) but NOT as an objective to be
+  optimised over granulation choices.
+
+==========================================================================
+  10.7  6x6 CALIBRATION SWEEP  ->  Table 10
+==========================================================================
+
+  Classification error (%):
+beta_mult   0.25  0.50  1.00  2.00  4.00  8.00
+alpha_mult                                    
+0.25        70.0  85.8  85.8  85.8  85.8  85.8
+0.50        25.1  70.0  85.8  85.8  85.8  85.8
+1.00        25.1  25.1  70.0  85.8  85.8  85.8
+2.00        25.1  25.1  25.1  70.0  85.8  85.8
+4.00        25.1  25.1  25.1  25.1  70.0  85.8
+8.00        25.1  25.1  25.1  25.1  25.1  70.0
+
+  AUROC:
+beta_mult   0.25  0.50  1.00  2.00  4.00  8.00
+alpha_mult                                    
+0.25       0.500 0.004 0.004 0.004 0.004 0.004
+0.50       0.996 0.500 0.004 0.004 0.004 0.004
+1.00       0.996 0.996 0.500 0.004 0.004 0.004
+2.00       0.996 0.996 0.996 0.500 0.004 0.004
+4.00       0.996 0.996 0.996 0.996 0.500 0.004
+8.00       0.996 0.996 0.996 0.996 0.996 0.500
+
+  Spread over the whole grid:  error 60.7 p.p.,  AUROC 0.992
+
+==========================================================================
+  10.8  TIMING PROTOCOL  ->  Table 16
+==========================================================================
+  timed runs                 : 6 (3 warm-up discarded per cohort)
+  base  mean / median (s)    : 0.0010 / 0.0010  IQR [0.0010, 0.0010]
+  incr  mean / median (s)    : 0.0014 / 0.0014  IQR [0.0014, 0.0014]
+  speedup mean [95% CI]      : 0.71x [0.66, 0.75]
+  mean |Delta_t|             : 7.04
+  cost term 1 (element touches, dominates) : 1082
+  cost term 2 (fingerprint comparisons)    : 54
+  peak RSS (MB) / aux state (kB)           : 187.5 / 1.2
+
+  A speedup factor is a property of a WORKLOAD, not of an algorithm;
+  report it as 'reduces per-cohort update cost by ~0.7x on this
+  workload', not as 'delivers a 9x speedup'.
+
+==========================================================================
+  10.9  DIAGNOSTIC REGRESSION  ->  Table 18
+==========================================================================
+  response Delta = err_B1 - err_DRSS  (percentage points)
+    mean -55.72  sd 3.02  range [-61.00, -49.00]
+    DRSS LOSES on 100.0% of runs  (previously not visible)
+  n = 60
+    Var_t(H_t)                 r=-0.12  beta=-0.177 [-0.571,+0.216]  VIF=1000000000000.00
+    mean|A_t|                  r=+0.08  beta=+0.209 [-0.578,+0.995]  VIF=1.01
+    mean max_a|F_t(a)|/|U|     r=+0.12  beta=+0.177 [-0.216,+0.571]  VIF=1000000000000.00
+  CV R^2 main effects      : -0.236 +/- 0.163
+  CV R^2 with interaction  : -0.338 +/- 0.233
+  in-sample adjusted R^2   : -0.033
+  nested F(1,55) = 0.02, p = 8.91e-01
+
+  SCOPE: fitted and cross-validated on SYNTHETIC data only. The
+  diagnostics are not validated on real cohorts and the fitted
+  coefficients must not be transferred to a new domain. Read them
+  as ordinal warnings, not as a calibrated model.
+
+==========================================================================
+  10.10  PREDICTION-HORIZON SWEEP
+==========================================================================
+ bins  hours  auroc_mean  auroc_sd
+   36  3.000       0.500     0.000
+   72  6.000       0.529     0.029
+  144 12.000       0.558     0.058
+
+==========================================================================
+  TABLE MAP
+==========================================================================
+   verify_theory                      -> Sec. 4.3, 6.3, 7 (assertions, no table)
+   run_overlap_entropy_study          -> Table 7 (overlap study)
+   run_calibration_sweep_6x6          -> Table 10 (6x6 calibration grid)
+   run_timing_protocol                -> Table 16 (timing protocol)
+   run_diagnostic_regression          -> Table 18 (diagnostics)
+   run_clinical_with_new_baselines    -> clinical evaluation (not in the paper)
+   run_horizon_sweep                  -> Sec. 15 (limitations, horizons)
+   diagnose_synthetic_benchmark       -> validity check for Tables 10-12
